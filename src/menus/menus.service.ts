@@ -63,6 +63,6 @@ export class MenusService {
     }
 
     const result = await this.menusRepository.delete(id);
-    return result.affected > 0;
+    return !!result.affected && result.affected > 0;
   }
 }

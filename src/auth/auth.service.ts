@@ -20,7 +20,7 @@ export class AuthService {
   async login(loginDto: LoginDto, role: Role.Customer | Role.Restaurant) {
     const { login_id, password } = loginDto;
 
-    let user: Customer | Restaurant;
+    let user: Customer | Restaurant | null;
     if (role === Role.Customer) {
       user = await this.customersService.findByLoginId(login_id);
     } else {

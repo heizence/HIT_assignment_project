@@ -11,7 +11,7 @@ export class RestaurantsService {
     private readonly restaurantsRepository: Repository<Restaurant>,
   ) {}
 
-  async findByLoginId(login_id: string): Promise<Restaurant | undefined> {
+  async findByLoginId(login_id: string): Promise<Restaurant | null> {
     return this.restaurantsRepository.findOne({ where: { login_id } });
   }
 }

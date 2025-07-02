@@ -11,7 +11,7 @@ export class CustomersService {
     private readonly customersRepository: Repository<Customer>,
   ) {}
 
-  async findByLoginId(login_id: string): Promise<Customer | undefined> {
+  async findByLoginId(login_id: string): Promise<Customer | null> {
     return this.customersRepository.findOne({ where: { login_id } });
   }
 }
