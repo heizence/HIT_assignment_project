@@ -19,12 +19,27 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/roles.enum';
 import { QueryMenuDto } from './dto/query-menu.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Menus (식당)') // API 그룹화 태그
+@ApiBearerAuth() // 해당 컨트롤러의 모든 API에 자물쇠 아이콘 추가
 @Controller('menus')
 export class MenusController {
   constructor(private readonly menusService: MenusService) {}
 
   @Post()
+  @ApiOperation({
+    summary: '메뉴 생성',
+    description: '식당 주인이 새로운 메뉴를 등록합니다.',
+  })
+  @ApiResponse({ status: 201, description: '메뉴 생성 성공' })
+  @ApiResponse({ status: 401, description: '인증 실패' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Restaurant)
   create(@Body() createMenuDto: CreateMenuDto, @Req() req) {
@@ -33,6 +48,15 @@ export class MenusController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '메뉴 목록 조회',
+    description: '자신의 가게 메뉴 목록을 필터링하여 조회합니다.',
+  })
+  @ApiQuery({
+    name: 'name',
+    required: false,
+    description: '메뉴 이름 (부분 일치)',
+  })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Restaurant)
   findAll(@Query() queryMenuDto: QueryMenuDto, @Req() req) {
