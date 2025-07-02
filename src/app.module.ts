@@ -3,15 +3,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { CustomersModule } from './customers/customers.module';
+import { RestaurantsModule } from './restaurants/restaurants.module';
+import { MenusModule } from './menus/menus.module';
+import { ReservationsModule } from './reservations/reservations.module'; // 추가
 
 @Module({
   imports: [
-    // 1. 환경 변수 모듈 설정
     ConfigModule.forRoot({
-      isGlobal: true, // 모든 모듈에서 접근 가능하도록 설정
-      envFilePath: '.env', // .env 파일 경로 지정
+      isGlobal: true,
+      envFilePath: '.env',
     }),
-    // 2. TypeORM 모듈 설정 (비동기)
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -22,11 +25,16 @@ import { AppService } from './app.service';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'], // Entity 파일 자동 로드
-        synchronize: true, // 개발 환경에서만 true로 설정 (DB 스키마 자동 동기화)
-        logging: true, // SQL 쿼리 로그
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        logging: true,
       }),
     }),
+    AuthModule,
+    CustomersModule,
+    RestaurantsModule,
+    MenusModule,
+    ReservationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
