@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ConflictException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, LessThan, MoreThan, Repository } from 'typeorm';
@@ -25,9 +26,25 @@ export class ReservationsService {
 
   // 예약 생성 (트랜잭션 적용)
   async create(createReservationDto: CreateReservationDto, customerId: number) {
-    const { restaurantId, startTime, endTime, menus } = createReservationDto;
+    const { restaurantId, startTime, endTime, menus, partySize } =
+      createReservationDto;
 
-    // 1. 예약 시간 중복 확인
+    // 1. 현재 시간과 예약 시작 시간을 비교
+    const now = new Date();
+    if (new Date(startTime) < now) {
+      throw new BadRequestException(
+        '지난 날짜 및 시간에는 예약할 수 없습니다.',
+      );
+    }
+
+    // 2. 종료 시간이 시작 시간보다 빠르거나 같은지 확인
+    if (new Date(endTime) <= new Date(startTime)) {
+      throw new BadRequestException(
+        '예약 종료 시간은 시작 시간보다 이후여야 합니다.',
+      );
+    }
+
+    // 3. 예약 시간 중복 확인
     const existingReservation = await this.reservationsRepository.findOne({
       where: {
         restaurant_id: restaurantId,
@@ -40,20 +57,29 @@ export class ReservationsService {
       throw new ConflictException('해당 시간에 이미 예약이 존재합니다.');
     }
 
-    // 2. 트랜잭션 시작
+    // 4. 트랜잭션 시작
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      // 2-1. 예약 정보 저장
-      const reservation = queryRunner.manager.create(Reservation, {
-        ...createReservationDto,
+      // DTO의 camelCase 속성을 Entity의 snake_case 속성으로 명시적으로 매핑
+      const reservationData = {
+        restaurant_id: restaurantId,
         customer_id: customerId,
-      });
+        start_time: startTime, // startTime -> start_time
+        end_time: endTime, // endTime ->
+        party_size: partySize,
+      };
+
+      // 4-1. 예약 정보 저장
+      const reservation = queryRunner.manager.create(
+        Reservation,
+        reservationData,
+      );
       const savedReservation = await queryRunner.manager.save(reservation);
 
-      // 2-2. 예약 메뉴 정보 저장
+      // 4-2. 예약 메뉴 정보 저장
       const reservationMenus = menus.map((menu) =>
         queryRunner.manager.create(ReservationMenu, {
           reservation_id: savedReservation.id,
@@ -63,7 +89,7 @@ export class ReservationsService {
       );
       await queryRunner.manager.save(reservationMenus);
 
-      // 2-3. 트랜잭션 커밋
+      // 4-3. 트랜잭션 커밋
       await queryRunner.commitTransaction();
       return savedReservation;
     } catch (err) {
