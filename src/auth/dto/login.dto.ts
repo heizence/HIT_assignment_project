@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, MinLength } from 'class-validator';
 
 export class LoginDto {
-  @ApiProperty({ example: 'customer1', description: '로그인 ID' })
+  @ApiProperty({ example: '고객 또는 식당 ID', description: '로그인 ID' })
   @IsString()
   login_id: string;
 
-  @ApiProperty({ example: 'testpassword', description: '비밀번호' })
+  @ApiProperty({ example: 'password', description: '비밀번호' })
   @IsString()
   @MinLength(4)
   password: string;
