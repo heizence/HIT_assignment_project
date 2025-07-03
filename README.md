@@ -1,98 +1,97 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS 기반 식당 예약 시스템 API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 1. 프로젝트 개요
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+본 프로젝트는 (주)에이치아이티 의 Node.js 개발자 채용 과제로 진행된 NestJS 기반 식당 예약 시스템 API 서버입니다.
 
-## Description
+## 2. 주요 기능
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 🍽️ 식당 (Restaurant)
+-   **로그인:** 사전에 등록된 계정으로 로그인하여 JWT 인증 토큰을 발급받습니다.
+-   **메뉴 관리 (CRD):**
+    -   **C (생성):** 새로운 메뉴(이름, 가격, 카테고리, 설명)를 등록합니다.
+    -   **R (조회):** 자신의 가게에 등록된 모든 메뉴를 조회하며, 이름(부분 일치), 최소/최대 가격으로 필터링할 수 있습니다.
+    -   **D (삭제):** 등록된 메뉴를 삭제합니다.
+-   **예약 관리:**
+    -   자신의 가게에 접수된 모든 예약을 조회하며, 고객 전화번호, 예약 날짜, 최소 인원수, 포함된 메뉴 이름으로 필터링할 수 있습니다.
 
-## Project setup
+### 👤 고객 (Customer)
+-   **로그인:** 사전에 등록된 계정으로 로그인하여 JWT 인증 토큰을 발급받습니다.
+-   **예약 관리 (CRUD):**
+    -   **C (생성):** 특정 식당을 지정하여 원하는 날짜와 시각에 예약을 생성합니다. (과거 시간 및 중복 시간 예약 불가)
+    -   **R (조회):** 자신이 생성한 모든 예약 내역을 조회합니다.
+    -   **U (수정):** 예약의 인원수와 메뉴 구성을 수정합니다.
+    -   **D (삭제):** 생성한 예약을 취소(삭제)합니다.
+
+## 3. 적용 기술 스택
+
+-   **Backend:** Node.js, NestJS, TypeScript
+-   **Database:** MySQL, TypeORM
+-   **Authentication:** JWT (JSON Web Token), Passport.js, bcrypt
+-   **API & Docs:** Swagger
+-   **Testing:** Jest, Supertest (E2E Test)
+
+## 4. 시작하기
+
+### 4.1. 사전 요구사항
+
+-   Node.js (v18 이상 권장)
+-   npm
+-   MySQL
+
+### 4.2. 설치
+
+1.  **프로젝트 클론**
+    ```bash
+    git clone https://github.com/heizence/HIT_assignment_project.git
+    cd HIT_assignment_project
+    ```
+
+2.  **의존성 패키지 설치**
+    ```bash
+    npm install
+    ```
+
+3.  **환경 변수 설정**
+    -   프로젝트 루트에 `.env` 파일을 생성하고 아래 내용을 채워넣습니다.
+    ```env
+    # .env.example
+    DB_HOST=host_name
+    DB_PORT=port_number
+    DB_USERNAME=username
+    DB_PASSWORD=your_db_password
+    DB_DATABASE=your_db_database
+    JWT_SECRET=your_local_secret_key
+    ```
+
+### 4.3. 애플리케이션 실행
+
+-   **개발 모드로 실행 (파일 변경 시 자동 재시작)**
+    ```bash
+    npm run start:dev
+    ```
+
+-   **프로덕션 모드로 실행**
+    ```bash
+    npm run build
+    npm run start:prod
+    ```
+
+## 5. 테스트
+
+-   프로젝트에 포함된 모든 E2E 테스트를 실행합니다.
+-   테스트 실행 전, 테스트용 데이터베이스가 준비되어 있어야 합니다. (`e2e_test_setup.sql` 참고)
 
 ```bash
-$ npm install
+npm run test:e2e
 ```
+### 5.1. 테스트 계정 정보
 
-## Compile and run the project
+| 역할 | 로그인 ID | 비밀번호 |
+| :--- | :--- | :--- |
+| **식당** | `korean_diner` | `qwer1234!` |
+| **식당** | `italian_bistro` | `qwer1234!` |
+| **고객** | `user_kim` | `qwer1234!` |
+| **고객** | `user_lee` | `qwer1234!` |
+| **고객** | `user_park` | `qwer1234!` |
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
