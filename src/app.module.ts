@@ -26,7 +26,7 @@ import { ReservationsModule } from './reservations/reservations.module'; // ì¶”ê
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
+        synchronize: false,
         logging: true,
       }),
     }),
